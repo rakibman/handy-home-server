@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.lvwoqtf.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -52,8 +52,18 @@ async function run() {
     app.get("/banner-services", async (req, res) => {
       const result = await serviceCollection
         .find()
-        .sort({ created_at: 1}).limit(6)
+        .sort({ created_at: 1 })
+        .limit(6)
         .toArray();
+      res.send(result);
+    });
+    // singel data find for detals page
+    app.get("/services/:id", async (req, res) => {
+      const { id } = req.params;
+      const objectId = new ObjectId(id);
+
+      const result = await serviceCollection.findOne({ _id: objectId });
+
       res.send(result);
     });
   } finally {
