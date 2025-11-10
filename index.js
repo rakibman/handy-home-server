@@ -46,8 +46,7 @@ async function run() {
     app.get("/services", async (req, res) => {
       const result = await serviceCollection.find().toArray();
       res.send(result);
-    });
-
+    }); 
     // banner services get func
     app.get("/banner-services", async (req, res) => {
       const result = await serviceCollection
@@ -72,6 +71,23 @@ async function run() {
       const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) });
 
       res.send(result);
+    });
+    // service update func 
+    app.put("/services/:id",  async (req, res) => {
+      const { id } = req.params;
+      const data = req.body;
+      const objectId = new ObjectId(id);
+      const filter = { _id: objectId };
+      const update = {
+        $set: data,
+      };
+
+      const result = await serviceCollection.updateOne(filter, update);
+
+      res.send({
+        success: true,
+        result,
+      });
     });
   } finally {
   }
