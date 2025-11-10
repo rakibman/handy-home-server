@@ -66,6 +66,13 @@ async function run() {
 
       res.send(result);
     });
+    // services delete function
+    app.delete("/services/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) });
+
+      res.send(result);
+    });
   } finally {
   }
 }
