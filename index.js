@@ -47,6 +47,15 @@ async function run() {
       const result = await serviceCollection.find().toArray();
       res.send(result);
     });
+
+    // banner services get func
+    app.get("/banner-services", async (req, res) => {
+      const result = await serviceCollection
+        .find()
+        .sort({ created_at: 1}).limit(6)
+        .toArray();
+      res.send(result);
+    });
   } finally {
   }
 }
