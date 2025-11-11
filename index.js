@@ -105,12 +105,12 @@ async function run() {
       const result = await bookingCollection.insertOne(data);
       res.send(result);
     });
-    // booking get func 
-    app.get('/my-bookings', async (req,res)=>{
-      const result = await bookingCollection.find().toArray()
-      res.send(result)
-    })
-    // booking delete func 
+    // booking get func
+    app.get("/my-bookings", async (req, res) => {
+      const result = await bookingCollection.find().toArray();
+      res.send(result);
+    });
+    // booking delete func
     app.delete("/my-bookings/:id", async (req, res) => {
       const { id } = req.params;
       const result = await bookingCollection.deleteOne({
@@ -119,7 +119,15 @@ async function run() {
 
       res.send(result);
     });
+    // sort by price get func
+    app.get("/sort-services", async (req, res) => {
+      const query = {
+        price: { $gte:  },
+      };
 
+      const result = await serviceCollection.find(query).toArray();
+      res.send(result);
+    });
   } finally {
   }
 }
