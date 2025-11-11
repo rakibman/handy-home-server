@@ -30,7 +30,7 @@ async function run() {
 
     const db = client.db("handy-home");
     const serviceCollection = db.collection("services");
-    // const newServiceCollection = db.collection("newservice");
+    const bookingCollection = db.collection("bookings");
 
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -46,7 +46,15 @@ async function run() {
     app.get("/services", async (req, res) => {
       const result = await serviceCollection.find().toArray();
       res.send(result);
-    }); 
+    });
+    // my services get func
+    app.get("/my-services", async (req, res) => {
+      const email = req.query.email;
+      const result = await serviceCollection
+        .find({ provider_email: email })
+        .toArray();
+      res.send(result);
+    });
     // banner services get func
     app.get("/banner-services", async (req, res) => {
       const result = await serviceCollection
@@ -68,12 +76,14 @@ async function run() {
     // services delete function
     app.delete("/services/:id", async (req, res) => {
       const { id } = req.params;
-      const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) });
+      const result = await serviceCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
 
       res.send(result);
     });
-    // service update func 
-    app.put("/services/:id",  async (req, res) => {
+    // service update func
+    app.put("/services/:id", async (req, res) => {
       const { id } = req.params;
       const data = req.body;
       const objectId = new ObjectId(id);
@@ -89,6 +99,18 @@ async function run() {
         result,
       });
     });
+    // booking add func
+    app.post("/my-bookings", async (req, res) => {
+      const data = req.body;
+      const result = await bookingCollection.insertOne(data);
+      res.send(result);
+    });
+    // booking get func 
+    app.get('/my-bookings', async (req,res)=>{
+      const result = await bookingCollection.find().toArray()
+      res.send(result)
+    })
+
   } finally {
   }
 }
