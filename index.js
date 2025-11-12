@@ -121,11 +121,12 @@ async function run() {
     });
     // sort by price get func
     app.get("/sort-services", async (req, res) => {
-      const query = {
-        price: { $gte:  },
-      };
-
-      const result = await serviceCollection.find(query).toArray();
+      const minPrice = Number(req.query.minPrice);
+      const maxPrice = Number(req.query.maxPrice);
+      console.log({ minPrice, maxPrice });
+      const result = await serviceCollection
+        .find({ price: { $gte: minPrice, $lte: maxPrice } })
+        .toArray();
       res.send(result);
     });
   } finally {
