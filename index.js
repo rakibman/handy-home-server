@@ -58,8 +58,10 @@ async function run() {
     });
     // banner services get func
     app.get("/banner-services", async (req, res) => {
+      const minStar = 3;
+      const maxStar = 5;
       const result = await serviceCollection
-        .find()
+        .find({ Review: { $gte: minStar, $lte: maxStar } })
         .sort({ created_at: 1 })
         .limit(6)
         .toArray();
@@ -146,7 +148,7 @@ async function run() {
     });
     // review get func
     app.get("/review/:id", async (req, res) => {
-      const{ id} = req.params;
+      const { id } = req.params;
       console.log(id);
       const result = await reviewCollection.find({ product_id: id }).toArray();
       console.log(result);
