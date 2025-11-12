@@ -31,6 +31,7 @@ async function run() {
     const db = client.db("handy-home");
     const serviceCollection = db.collection("services");
     const bookingCollection = db.collection("bookings");
+    const reviewCollection = db.collection("reviews");
 
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -127,6 +128,28 @@ async function run() {
       const result = await serviceCollection
         .find({ price: { $gte: minPrice, $lte: maxPrice } })
         .toArray();
+      res.send(result);
+    });
+    // search by name func
+    app.get("/search", async (req, res) => {
+      const search_text = req.query.search;
+      const result = await serviceCollection
+        .find({ service_Name: { $regex: search_text, $options: "i" } })
+        .toArray();
+      res.send(result);
+    });
+    // add review func
+    app.post("/review", async (req, res) => {
+      const data = req.body;
+      const result = await reviewCollection.insertOne(data);
+      res.send(result);
+    });
+    // review get func
+    app.get("/review/:id", async (req, res) => {
+      const{ id} = req.params;
+      console.log(id);
+      const result = await reviewCollection.find({ product_id: id }).toArray();
+      console.log(result);
       res.send(result);
     });
   } finally {
